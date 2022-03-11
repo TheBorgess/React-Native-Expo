@@ -1,131 +1,154 @@
-import React , { useState} from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View , ImageBackground} from 'react-native';
-import { KeyboardAvoidingView, Platform, TextInput, TouchableOpacity } from 'react-native';
-//import { useState } from 'react/cjs/react.production.min';
-import Tasks from './components/Tasks';
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+} from "@react-navigation/drawer";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  NativeBaseProvider,
+  Button,
+  Box,
+  HamburgerIcon,
+  Pressable,
+  Heading,
+  VStack,
+  Text,
+  Center,
+  HStack,
+  Divider,
+  Icon,
+} from "native-base";
 
-//const imgBackGround = './assets/icon.png'
+//import Tasks from './components/Tasks';
+import Task from './Task';
+import Login from './pages/Login'
+import Cards from './pages/About';
+import Contact from './pages/Contact';
 
-export default function App() {
+const Drawer = createDrawerNavigator();
 
-  const [task, setTask] = useState();
-  const [taskItems, setTaskItems] = useState([]);
+const showPage = (pageToShow) => {
+   
+  if(pageToShow == 'Tasks') {
+     return <Task />
+   }  
+   if(pageToShow == 'About Us') { 
+     return <Cards />
+   }  
+   if(pageToShow == 'Contact') { 
+     return <Contact />
+   }  
+   return <Login />
+  
+}
 
-  const handleAddTask = () =>{
-    if (task != null && task != '') {
-        //keyboard.dismiss();
-        setTaskItems([...taskItems, task]) 
-        setTask(null);
-    }  
-        //console.log(task);  
-  }
-
-  const completeTask = (index) => {
-     let itemsCopy = [...taskItems];
-     itemsCopy.splice(index, 1);
-     setTaskItems(itemsCopy);
-  }
-
+function Component(props) {
   return (
-    <View style={styles.container}>
-      
-      {/* Today's tasks */}
-      <View style={styles.tasksWrapper}>
-          
-          <Text style={styles.sectionTitle}>Today's Tasks</Text>
+    <>
+      {/*<Center>
+       <Text mt="12" fontSize="18">  */}
 
-          <View style={styles.items}>
-              {/***** Tasks ******/}
-              {
-                taskItems.map((item, index) => {
-                  return (
-                    <TouchableOpacity onPress={() => completeTask(index)}>
-                        <Tasks text={item} />
-                    </TouchableOpacity>
-                  )
-                })
-              }   
-
-              {/*<Tasks text={'Taks 1'}/>
-                 <Tasks text={'Taks 2'}/>
-                 <Tasks text={'Taks 3'}/>
-                 <Tasks text={'Taks 4'}/>*/}
-
-          </View> 
-
-      </View>
-
-      {/* Write a task */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.writeTaskWrapper}
-       >
-         <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)} />
-         
-         <TouchableOpacity onPress={() => handleAddTask()}>
-            <View style={styles.addWrapper}>  
-               <Text style={styles.addText}>+</Text>
-            </View>
-         </TouchableOpacity>
-      </KeyboardAvoidingView> 
-
-      <StatusBar style="auto" />
-    </View>
+          {showPage(props.route.name)}  
+          {/*props.route.name*/}
+                
+       {/*} </Text>
+       </Center>*/}
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#A020F0',
-  },
-  imagemFundo: {
-    flex:1,
-    resizeMode:"cover",
-    width:"100%",
-    height:"100%" , 
-    padding:15,
-  },
-  tasksWrapper: {
-    paddingTop: 80,
-    paddingHorizontal: 20,
+const getIcon = (screenName) => {
+  switch (screenName) {
+    case "Login":
+      return undefined;
+    case "Tasks":
+      return undefined;
+    case "Contact":
+      return undefined;
+    case "About Us":
+      return undefined;
+    case "Trash":
+      return "trash-can";
+    case "Spam":
+      return "alert-circle";
+    default:
+      return undefined;
+  }
+};
 
-  },
-  sectionTitle: {
-    color: 'white',
-    fontSize: 24,
+function CustomDrawerContent(props) {
+  return (
+    <DrawerContentScrollView {...props} safeArea>
+      <VStack space="6" my="2" mx="1">
+        <Box px="4">
+          
+        </Box>
+        <VStack divider={<Divider />} space="4">
+          <VStack space="3">
+            {props.state.routeNames.map((name, index) => (
+              <Pressable
+                px="5"
+                py="3"
+                rounded="md"
+                bg={
+                  index === props.state.index
+                    ? "rgba(6, 182, 212, 0.1)"
+                    : "transparent"
+                }
+                onPress={(event) => {
+                  props.navigation.navigate(name);
+                }}
+              >
+                <HStack space="7" alignItems="center">
+                  <Icon
+                    color={
+                      index === props.state.index ? "primary.500" : "gray.500"
+                    }
+                    size="5"
+                    as={<MaterialCommunityIcons name={getIcon(name)} />}
+                  />
+                  <Text
+                    fontWeight="500"
+                    color={
+                      index === props.state.index ? "primary.500" : "gray.700"
+                    }
+                  >
+                    {name}
+                  </Text>
+                </HStack>
+              </Pressable>
+            ))}
+          </VStack>
+        </VStack>
+      </VStack>
+    </DrawerContentScrollView>
+  );
+}
 
-  },
-  items: {
-    marginTop: 30,
-  },
-  writeTaskWrapper:{
-    position: 'absolute',
-    bottom: 60,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  input:{
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    backgroundColor: '#FFF',
-    borderRadius: 60,
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
-    width: 250,
-  },
-  addWrapper:{
-    width: 60,
-    height: 60,
-    backgroundColor: '#FFF',
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
+function MyDrawer() {
+  return (
+    <Box safeArea flex={1}>
+      <Drawer.Navigator
+        drawerContent={(props) => <CustomDrawerContent {...props} />}
+      >
+        
+        <Drawer.Screen options={{ headerShown: false }}  name="Login" component={Component} />
+        <Drawer.Screen name="Tasks" component={Component} />
+        <Drawer.Screen name="Contact" component={Component} />
+        <Drawer.Screen name="About Us" component={Component} />
+       
+      </Drawer.Navigator>
+    </Box>
+  );
+}
 
-  },
-});
+export default function Example() {
+  return (
+    <NavigationContainer>
+      <NativeBaseProvider>
+        <MyDrawer />
+      </NativeBaseProvider>
+    </NavigationContainer>
+  );
+}

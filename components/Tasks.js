@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-web';
 
+//////////import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
+
 const Tasks = (props) => {
 
    return (
