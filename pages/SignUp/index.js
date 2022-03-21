@@ -2,50 +2,64 @@
 import React, { useState } from 'react';
 import { StyleSheet, View , Button , Alert, ToastAndroid } from 'react-native';
 import { Input, Icon , Text} from 'react-native-elements';
-//import { NavigationContainer } from '@react-navigation/native';
-//import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { useNavigation } from '@react-navigation/core';
 import { useAnimatedGestureHandler } from 'react-native-reanimated';
-//import { auth } from '../../firebase';
 
 import firebase from '../../firebase';
 
- const Login = () => {
+ const SignUp = () => {
 
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [status, setStatus] = useState("");
    const [mensagem, setMensagem] = useState("");
    
-   const navigation = useNavigation()
+   const navigation = useNavigation();
 
    
    const handleSignUp = () => {
-      navigation.navigate("SignUp");  
-   }
-
-   
-   const handleLogin = () => {
-
-      firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {     
+     
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in
         var user = userCredential.user;
-        navigation.navigate("Tasks");
+        console.log(user.email);
+        navigation.navigate("Login");
       })
       .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
+        console.log(errorMessage);
         setStatus("erro");
         setMensagem(errorMessage);
       });
+    
+    }
 
-   }
+   
+    const goBack = () =>{
+       navigation.navigate("Login"); 
+    }
 
 
    return (
      <>
+       <Button 
+           icon={
+              <Icon
+                 name="check"
+                 size={15}
+                 color="black"
+              /> 
+           }
+           color="black"
+           title="go back"
+           onPress={goBack}
+        />
+
        <View style={styles.container}>
-         <Text style={styles.sectionTitle}>Login</Text>
+         <Text style={styles.sectionTitle}>SignUp</Text>
          &nbsp;&nbsp;<br />
 
         <Text style={styles.baseText}>{status === 'erro' ? mensagem : ""}</Text>
@@ -71,37 +85,9 @@ import firebase from '../../firebase';
               /> 
            }
            color="#A020F0"
-           title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-           onPress={handleLogin}
-        />
-        &nbsp;
-          <Button 
-           icon={
-              <Icon
-                 name="check"
-                 size={15}
-                 color="#FFF"
-              /> 
-           }
-           color="#058FFD"
            title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SignUp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
            onPress={handleSignUp}
         />
-
-        {/*
-        <Button
-           title="Naigate to next page"
-           onPress={() => {
-             navigation.navigate('Task'); 
-           }}
-        />  
-        <Button
-          title="Naigate to next pageggggg"  
-          onPress={(event) => {
-                   props.navigation.navigate('Task');
-                 }}
-       
-        />*/}
 
       </View>
      </>
@@ -125,5 +111,4 @@ import firebase from '../../firebase';
   },
  })
 
-export default Login;
-
+export default SignUp;

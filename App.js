@@ -25,11 +25,15 @@ import Task from './Task';
 import Login from './pages/Login'
 import Cards from './pages/About';
 import Contact from './pages/Contact';
+import SignUp from "./pages/SignUp";
 
 const Drawer = createDrawerNavigator();
 
 const showPage = (pageToShow) => {
-   
+  
+  if(pageToShow == 'SignUp') {
+    return <SignUp />
+  }  
   if(pageToShow == 'Tasks') {
      return <Task />
    }  
@@ -62,6 +66,8 @@ const getIcon = (screenName) => {
   switch (screenName) {
     case "Login":
       return undefined;
+    case "SignUp":
+        return undefined;  
     case "Tasks":
       return undefined;
     case "Contact":
@@ -134,6 +140,7 @@ function MyDrawer() {
       >
         
         <Drawer.Screen options={{ headerShown: false }}  name="Login" component={Component} />
+        <Drawer.Screen options={{ headerShown: false }}  name="SignUp" component={Component} />
         <Drawer.Screen name="Tasks" component={Component} />
         <Drawer.Screen name="Contact" component={Component} />
         <Drawer.Screen name="About Us" component={Component} />
