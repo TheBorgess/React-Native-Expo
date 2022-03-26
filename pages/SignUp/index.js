@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { StyleSheet, View , Button , Alert, ToastAndroid } from 'react-native';
+import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity } from 'react-native';
 import { Input, Icon , Text} from 'react-native-elements';
 
 import { useNavigation } from '@react-navigation/core';
@@ -14,6 +14,8 @@ import firebase from '../../firebase';
    const [password, setPassword] = useState("");
    const [status, setStatus] = useState("");
    const [mensagem, setMensagem] = useState("");
+
+   const [showPassword, setShowPassword] = useState(true);
    
    const navigation = useNavigation();
 
@@ -45,18 +47,18 @@ import firebase from '../../firebase';
 
    return (
      <>
-       <Button 
+      <Button 
            icon={
               <Icon
                  name="check"
                  size={15}
-                 color="black"
+                 color="CC66FF"
               /> 
            }
-           color="black"
+           color="#CC66FF"
            title="go back"
            onPress={goBack}
-        />
+         />
 
        <View style={styles.container}>
          <Text style={styles.sectionTitle}>SignUp</Text>
@@ -73,7 +75,15 @@ import firebase from '../../firebase';
          <Input 
             placeholder='Password'
             leftIcon={<Icon name="lock" size={25} color="#A020F0" />}
-            secureTextEntry={true}
+            rightIcon={
+               <TouchableOpacity
+                 onPress={() => {
+                    setShowPassword((prev) => !prev);
+                 }}>
+                 <Text>{showPassword ? 'Show' : 'Hide'}</Text>   
+               </TouchableOpacity>
+            }
+            secureTextEntry={showPassword}
             onChangeText={(text)=>setPassword(text)}
          />
         <Button 

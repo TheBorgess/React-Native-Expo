@@ -39,7 +39,7 @@ const Cards = () => {
   const navigation = useNavigation()
 
   const showContact = () => {  
-          navigation.navigate("Contact")
+          navigation.navigate("Login")
   }
 
   return (
@@ -76,7 +76,7 @@ const Cards = () => {
                 marginBottom: 0,
               }}
               color="#A020F0"
-              title="VIEW NOW"
+              title="Log Out"
               onPress={() => showContact()}
             />
           </Card>

@@ -20,7 +20,6 @@ import {
   Icon,
 } from "native-base";
 
-//import Tasks from './components/Tasks';
 import Task from './Task';
 import Login from './pages/Login'
 import Cards from './pages/About';
@@ -93,7 +92,8 @@ function CustomDrawerContent(props) {
         <VStack divider={<Divider />} space="4">
           <VStack space="3">
             {props.state.routeNames.map((name, index) => (
-              <Pressable
+             name === 'Tasks' || name === 'Contact' || name === 'About Us' ? 
+             <Pressable
                 px="5"
                 py="3"
                 rounded="md"
@@ -107,23 +107,25 @@ function CustomDrawerContent(props) {
                 }}
               >
                 <HStack space="7" alignItems="center">
-                  <Icon
+                 {/* <Icon
                     color={
                       index === props.state.index ? "primary.500" : "gray.500"
                     }
                     size="5"
                     as={<MaterialCommunityIcons name={getIcon(name)} />}
-                  />
+                  /> */}
                   <Text
                     fontWeight="500"
                     color={
                       index === props.state.index ? "primary.500" : "gray.700"
                     }
                   >
+                    {/*name === 'Login' || name === 'SignUp'? "" : name*/}
                     {name}
                   </Text>
                 </HStack>
               </Pressable>
+            : "" 
             ))}
           </VStack>
         </VStack>
