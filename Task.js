@@ -1,30 +1,86 @@
-import React , { useState} from 'react';
+import React , { useEffect, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ImageBackground, ScrollView, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, ScrollView, Keyboard , FlatList , Alert } from 'react-native';
 import { KeyboardAvoidingView, Platform, TextInput, TouchableOpacity } from 'react-native';
 
-//import { Link } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Tasks from './components/Tasks';
 
 export default function App() {
 
   const [task, setTask] = useState();
+  
   const [taskItems, setTaskItems] = useState([]);
 
-  const handleAddTask = () =>{
-    if (task != null && task != '') {
-        setTaskItems([...taskItems, task]) 
-        setTask(null);
-    }  
-        //console.log(task);  
-        Keyboard.dismiss();
+  useEffect(() => {
+    getTasksFromDevice();
+  },[]);  
+
+  useEffect(() => {
+      saveTasksToDevice(taskItems);
+  },[taskItems]);   
+
+  const saveTasksToDevice = async (taskItems) => {
+     try {
+        const stringifyTaskItems = JSON.stringify(taskItems);
+        await AsyncStorage.setItem('taskItems', stringifyTaskItems);
+     } 
+     catch (e) {
+        /////saving error
+        console.log(e);
+     }
+
+  }
+
+  const getTasksFromDevice = async () => {
+     try {
+       const taskItems = await AsyncStorage.getItem('taskItems')  
+       if (taskItems != null) {
+           setTaskItems(JSON.parse(taskItems));
+       }  
+    }
+      catch (error) {
+        console.log(error);
+     }
+
+  }
+
+  const handleAddTask = () => {
+    if(task == '' || task == null) {
+      ////erro message
+      console.log('Error, Task is null');
+    }
+    else {     
+          //console.log(task);  
+          const newTask = {
+              id: Math.random(),
+              name: task,
+          };
+          setTaskItems([...taskItems, newTask]);
+          setTask('');
+    }
+    Keyboard.dismiss();
   }
 
   const completeTask = (index) => {
-     let itemsCopy = [...taskItems];
-     itemsCopy.splice(index, 1);
-     setTaskItems(itemsCopy);
+
+    Alert.alert(
+      "Delete Record",
+      "Are you sure to delete this record?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => console.log("Ok Pessed") }
+      ]
+    );  
+
+     //console.log(index);
+     const newTask = taskItems.filter(item => item.id != index);
+     setTaskItems(newTask);
   }
 
   return (
@@ -33,25 +89,23 @@ export default function App() {
       {/* Today's tasks */}
       <View style={styles.tasksWrapper}>
           
-          <Text style={styles.sectionTitle}>Today's Tasks</Text>
+          <Text style={styles.sectionTitle}>Today's Tasks - Storage</Text>
 
           <View style={styles.items}>
+
             <ScrollView>
               {/***** Tasks ******/}
-              {
-                taskItems.map((item, index) => {
-                  return (
-                    <TouchableOpacity onPress={() => completeTask(index)}>
-                        <Tasks text={item} />
-                    </TouchableOpacity>
-                  )
-                })
-              }   
+             
+              <FlatList 
+                 data={taskItems} 
+                 renderItem={({item}) => 
+                 <TouchableOpacity onPress={() => completeTask(item?.id)}>
+                   <Tasks text={item} />
+                 </TouchableOpacity> } 
+              /> 
 
               {/*<Tasks text={'Taks 1'}/>
-                 <Tasks text={'Taks 2'}/>
-                 <Tasks text={'Taks 3'}/>
-                 <Tasks text={'Taks 4'}/>*/}
+                 <Tasks text={'Taks 2'}/>*/}
 
             </ScrollView>
           </View> 
@@ -75,6 +129,7 @@ export default function App() {
       <StatusBar style="auto" />
     </View>
   );
+
 }
 
 const styles = StyleSheet.create({
@@ -82,13 +137,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#A020F0',
   },
-  /*imagemFundo: {
-    flex:1,
-    resizeMode:"cover",
-    width:"100%",
-    height:"100%" , 
-    padding:15,
-  },*/
   tasksWrapper: {
     paddingTop: 50,
     paddingHorizontal: 20,
