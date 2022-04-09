@@ -25,6 +25,10 @@ import Login from './pages/Login'
 import Cards from './pages/About';
 import Contact from './pages/Contact';
 import SignUp from "./pages/SignUp";
+import User from './pages/User';
+import UsersList from './pages/UsersList';
+import UserDetail from './pages/UserDetail';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -42,6 +46,15 @@ const showPage = (pageToShow) => {
    if(pageToShow == 'Contact') { 
      return <Contact />
    }  
+   if(pageToShow == 'User') {
+    return <User />
+  } 
+  if(pageToShow == 'UsersList') {
+    return <UsersList />
+  }  
+  if(pageToShow == 'UserDetail') {
+    return <UserDetail />
+  }    
    return <Login />
   
 }
@@ -92,7 +105,7 @@ function CustomDrawerContent(props) {
         <VStack divider={<Divider />} space="4">
           <VStack space="3">
             {props.state.routeNames.map((name, index) => (
-             name === 'Tasks' || name === 'Contact' || name === 'About Us' ? 
+             name === 'Tasks' || name === 'Contact' || name === 'About Us' || name === 'UsersList' ? 
              <Pressable
                 px="5"
                 py="3"
@@ -144,8 +157,11 @@ function MyDrawer() {
         <Drawer.Screen options={{ headerShown: false }}  name="Login" component={Component} />
         <Drawer.Screen options={{ headerShown: false }}  name="SignUp" component={Component} />
         <Drawer.Screen name="Tasks" component={Component} />
+        <Drawer.Screen name="UsersList" component={Component} />
         <Drawer.Screen name="Contact" component={Component} />
         <Drawer.Screen name="About Us" component={Component} />
+        <Drawer.Screen name="User" component={Component} />
+        <Drawer.Screen name="UserDetail" component={Component} />
        
       </Drawer.Navigator>
     </Box>
