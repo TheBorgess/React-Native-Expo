@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity , ScrollView } from 'react-native';
+import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity , ScrollView , ActivityIndicator, TextInput , KeyboardAvoidingView } from 'react-native';
 import { Input, Icon , Text, ListItem, Avatar } from 'react-native-elements';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import firebase from '../../firebase';
 
- const UsersList = () => {
+const UsersList = () => {
 
    var contador = 0; 
 
@@ -16,9 +16,15 @@ import firebase from '../../firebase';
    
    const [users, setUsers] = useState([]);
 
+   //Search Text 
+   const [searchText, setSearchText] = useState('');
+
+   const [loading, setLoading] = useState(true)
+
    useEffect (() => {
-      db.collection('users').onSnapshot(querySnapshot => {
-            
+      db.collection('users').orderBy('userName').onSnapshot(querySnapshot => {
+      //db.collection('users').where("userName", ">=", "M").onSnapshot(querySnapshot => {
+           
             const users = [];
             
             querySnapshot.docs.forEach(doc => {
@@ -33,16 +39,62 @@ import firebase from '../../firebase';
             });
          //console.log(users) 
          setUsers(users)
+         setLoading(false);
       });
    }, []);
 
+   const searchUsers = () => {
+         //console.log('search', searchText);
+         db.collection('users').where("userName", ">=", searchText).onSnapshot(querySnapshot => {
+         //db.collection('users').orderBy('userName').startAt('Marcio').onSnapshot(querySnapshot => {    
+               const users = [];
+               
+               querySnapshot.docs.forEach(doc => {
+                  const {userName, address, phone}  = doc.data()
+                  users.push({
+                    id: doc.id,
+                    userName,
+                    address,
+                    phone
+                  })   
+               });
+            setUsers(users)
+            setLoading(false);
+         });
+   }
+
+   if (loading) {
+      return( 
+         <view>
+            <ActivityIndicator />
+         </view>
+      )  
+   }
+
    return (
+
+    <ScrollView>
      
-      <ScrollView>
-        <Button 
+       <Button 
           title='Create User' color="#A020F0"
           onPress={() => navigation.navigate('User')}
-        />
+       />
+     
+       <View style={styles.container}> 
+
+         <Input 
+            style={styles.input}
+            placeholder='Search'  value={searchText}
+            rightIcon={
+               <TouchableOpacity
+                  onPress={() => {searchUsers()}}>
+                 <Text>Search</Text>   
+               </TouchableOpacity>               
+            }
+            onChangeText={(t) => setSearchText(t)}  
+         />
+        
+       </View>
 
         {
            users.map(user => {
@@ -63,33 +115,37 @@ import firebase from '../../firebase';
   
                      <ListItem.Content>
                         <ListItem.Title>{user.userName}</ListItem.Title>
-                        <ListItem.Subtitle>{user.address}</ListItem.Subtitle>
+                        <ListItem.Subtitle>{user.phone}</ListItem.Subtitle>
                      </ListItem.Content>
                   </ListItem>
                )
            })
         }
 
-      </ScrollView>
+    </ScrollView> 
      
    );
  
   };
 
  const styles = StyleSheet.create({
-   container:{
-        flex:1,
-        backgroundColor: '#FFF',
-        alignItems: 'center',
-        justifyContent: 'center',
-   },
+   container: {
+      flex: 1,
+      backgroundColor: '#FFF',
+    },
    sectionTitle: {
         color: 'black',
         fontSize: 24,
    },
    baseText: {
     color: "red",
-  },
+   },
+   input: {
+     height: 25,
+     margin: 12,
+     borderWidth: 1,
+     padding: 10,
+   },
  })
 
 export default UsersList;
