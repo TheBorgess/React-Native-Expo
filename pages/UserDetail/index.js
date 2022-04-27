@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity } from 'react-native';
-import { Input, Icon , Text} from 'react-native-elements';
+import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity , ActivityIndicator , Text } from 'react-native';
+import { Input, Icon } from 'react-native-elements';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -21,6 +21,8 @@ import firebase from '../../firebase';
       address: "",
       phone: ""
    }); 
+    
+   const [loading, setLoading] = useState(true)
 
    const getUserById = async (id) => {
        const dbRef = db.collection('users').doc(id)
@@ -31,6 +33,7 @@ import firebase from '../../firebase';
           id: doc.id, 
        });
        //console.log(user);
+       setLoading(false);
    }
 
    useEffect(() => {
@@ -38,7 +41,8 @@ import firebase from '../../firebase';
    },[route.params?.userId]);
 
    const goBack = () => {
-      setUser({ ...user, id: '', userName: '', address: '', phone: ''}); 
+      //setUser({ ...user, id: '', userName: '', address: '', phone: ''}); 
+      setLoading(true);
       navigation.navigate('UsersList');
    }
    
@@ -54,14 +58,23 @@ import firebase from '../../firebase';
          phone: user.phone
       })
       //setUser({ ...user, id: '', userName: '', address: '', phone: ''}); 
+      alert('User updated with success');
       navigation.navigate('UsersList');
    }
 
    const deleteUser = async () => {
       const dbRef = db.collection('users').doc(route.params?.userId)
       await dbRef.delete();
-      alert('User deleted with success');
+      alert('User has been deleted with success!');
       navigation.navigate('UsersList');
+   }
+
+   if (loading) {
+     return( 
+        <View>
+           <ActivityIndicator size="large" color="#921DD9" />
+        </View>
+     )  
    }
 
    return (
@@ -81,7 +94,6 @@ import firebase from '../../firebase';
 
        <View style={styles.container}>
          <Text style={styles.sectionTitle}>Details</Text>
-         &nbsp;&nbsp;<br />
 
          <Input 
             placeholder='Name' value={user.userName}
@@ -110,7 +122,9 @@ import firebase from '../../firebase';
            title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update User&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
            onPress={updateUser}
         />
-        <br />
+
+        <Text style={styles.sectionTitle2}>t</Text>
+        
         <Button 
            icon={
               <Icon
@@ -140,8 +154,12 @@ import firebase from '../../firebase';
         fontSize: 24,
    },
    baseText: {
-    color: "red",
-  },
+        color: "red",
+   },
+   sectionTitle2: {
+        color: 'white',
+        fontSize: 7,
+   },
  })
 
 export default UserDetail;

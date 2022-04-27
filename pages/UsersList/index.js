@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity , ScrollView , ActivityIndicator, TextInput , KeyboardAvoidingView } from 'react-native';
-import { Input, Icon , Text, ListItem, Avatar } from 'react-native-elements';
+import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity , ScrollView , ActivityIndicator, TextInput , KeyboardAvoidingView , Text } from 'react-native';
+import { Input, Icon , ListItem, Avatar } from 'react-native-elements';
+
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -63,11 +65,31 @@ const UsersList = () => {
          });
    }
 
+   const rightSwipe = () => {
+          return (
+            <TouchableOpacity  activeOpacity={0.9}> 
+              <View style={styles.deleteButton}>
+                 <Text style={styles.textButton}>Delete</Text>
+              </View>
+            </TouchableOpacity>  
+          )
+   }
+
+   const deleteUser = async (id) => {
+       const dbRef = db.collection('users').doc(id);
+       await dbRef.delete();
+       //console.log('id==' , id);
+       alert('User has been deleted with success!');
+       setUsers([]);
+       searchUsers();
+   }
+
+
    if (loading) {
       return( 
-         <view>
-            <ActivityIndicator />
-         </view>
+         <View>
+             <ActivityIndicator size="large" color="#921DD9" />            
+         </View>
       )  
    }
 
@@ -100,6 +122,9 @@ const UsersList = () => {
            users.map(user => {
                contador = contador + 1;
                return (
+                
+                <Swipeable onSwipeableRightOpen={() => deleteUser(user.id)} renderRightActions={rightSwipe}>
+
                   <ListItem  key={user.id} bottomDivider onPress={() => navigation.navigate('UserDetail', { userId: user.id })} >
                      <ListItem.Chevron />
                     {/* <Avatar
@@ -118,6 +143,9 @@ const UsersList = () => {
                         <ListItem.Subtitle>{user.phone}</ListItem.Subtitle>
                      </ListItem.Content>
                   </ListItem>
+              
+                </Swipeable>
+
                )
            })
         }
@@ -145,6 +173,16 @@ const UsersList = () => {
      margin: 12,
      borderWidth: 1,
      padding: 10,
+   },
+   deleteButton: {
+     backgroundColor: 'red',
+     justifyContent: 'center',
+     alignItems: 'center',
+     width: 200,
+     height: 70,
+   },
+   textButton: {
+     color: 'white',
    },
  })
 

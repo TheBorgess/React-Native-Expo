@@ -1,17 +1,21 @@
 import React , { useEffect, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ImageBackground, ScrollView, Keyboard , FlatList , Alert } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, ScrollView, Keyboard , FlatList , Alert , Button } from 'react-native';
 import { KeyboardAvoidingView, Platform, TextInput, TouchableOpacity } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { useNavigation , useRoute } from '@react-navigation/native';
+
 import Tasks from './components/Tasks';
 
-export default function App() {
+export default function App({ route }) {
 
   const [task, setTask] = useState();
   
   const [taskItems, setTaskItems] = useState([]);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     getTasksFromDevice();
@@ -65,7 +69,7 @@ export default function App() {
 
   const completeTask = (index) => {
 
-    Alert.alert(
+  /*  Alert.alert(
       "Delete Record",
       "Are you sure to delete this record?",
       [
@@ -79,13 +83,39 @@ export default function App() {
     );  
 
      //console.log(index);
+     console.log('Task deleted with success');
+     const newTask = taskItems.filter(item => item.id != index);
+     setTaskItems(newTask); */
+
+     Alert.alert(
+      "Delete Record",
+      "Are you sure to delete this record?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => deleteTask(index) }
+      ]
+    );  
+
+  }
+
+   const deleteTask = (index) => {
      const newTask = taskItems.filter(item => item.id != index);
      setTaskItems(newTask);
   }
 
   return (
     <View style={styles.container}>
-      
+
+      <Button 
+           color="#CC66FF"
+           title="Users List"
+           onPress={() => navigation.navigate('UsersList')}
+      />
+
       {/* Today's tasks */}
       <View style={styles.tasksWrapper}>
           
@@ -93,7 +123,7 @@ export default function App() {
 
           <View style={styles.items}>
 
-            <ScrollView>
+          {/*  <ScrollView>  */ }
               {/***** Tasks ******/}
              
               <FlatList 
@@ -107,7 +137,8 @@ export default function App() {
               {/*<Tasks text={'Taks 1'}/>
                  <Tasks text={'Taks 2'}/>*/}
 
-            </ScrollView>
+          {/*  </ScrollView>  */}
+          
           </View> 
 
       </View>
@@ -127,7 +158,9 @@ export default function App() {
       </KeyboardAvoidingView> 
 
       <StatusBar style="auto" />
+      
     </View>
+  
   );
 
 }
@@ -138,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#A020F0',
   },
   tasksWrapper: {
-    paddingTop: 50,
+    paddingTop: 20,
     paddingHorizontal: 20,
   },
   sectionTitle: {
@@ -150,7 +183,7 @@ const styles = StyleSheet.create({
   },
   writeTaskWrapper:{
     position: 'absolute',
-    bottom: 40,
+    bottom: 15,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -166,8 +199,8 @@ const styles = StyleSheet.create({
     width: 250,
   },
   addWrapper:{
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     backgroundColor: '#FFF',
     borderRadius: 60,
     justifyContent: 'center',

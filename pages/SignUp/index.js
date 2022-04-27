@@ -1,10 +1,9 @@
 
 import React, { useState } from 'react';
-import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity } from 'react-native';
-import { Input, Icon , Text} from 'react-native-elements';
-
-import { useNavigation } from '@react-navigation/core';
-import { useAnimatedGestureHandler } from 'react-native-reanimated';
+import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity , Text} from 'react-native';
+import { Input, Icon } from 'react-native-elements';
+///////import { useNavigation } from '@react-navigation/core';
+import { useNavigation , useRoute } from '@react-navigation/native';
 
 import firebase from '../../firebase';
 
@@ -19,7 +18,9 @@ import firebase from '../../firebase';
    
    const navigation = useNavigation();
 
-   
+   const route = useRoute();
+   //console.log('===', route.params.nome);
+
    const handleSignUp = () => {
      
       firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -39,11 +40,10 @@ import firebase from '../../firebase';
     
     }
 
-   
     const goBack = () =>{
-       navigation.navigate("Login"); 
+       //navigation.navigate("Login");
+       navigation.navigate("UserLogin"); 
     }
-
 
    return (
      <>
@@ -55,14 +55,15 @@ import firebase from '../../firebase';
                  color="CC66FF"
               /> 
            }
-           color="#CC66FF"
+           color="#A020F0" 
            title="go back"
            onPress={goBack}
-         />
+      />
 
        <View style={styles.container}>
+         
+         <Text style={styles.sectionTitle}>{route.params?.nome}</Text>
          <Text style={styles.sectionTitle}>SignUp</Text>
-         &nbsp;&nbsp;<br />
 
         <Text style={styles.baseText}>{status === 'erro' ? mensagem : ""}</Text>
 

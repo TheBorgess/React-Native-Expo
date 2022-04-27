@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity } from 'react-native';
-import { Input, Icon , Text} from 'react-native-elements';
+import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity , Text} from 'react-native';
+import { Input, Icon } from 'react-native-elements';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -61,7 +61,6 @@ import firebase from '../../firebase';
 
        <View style={styles.container}>
          <Text style={styles.sectionTitle}>New User</Text>
-         &nbsp;&nbsp;<br />
 
          <Input 
             placeholder='Name' value={state.userName}

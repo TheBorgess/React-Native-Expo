@@ -1,16 +1,10 @@
-// Import the functions you need from the SDKs you need
-//import * as firebase from "firebase";
-//import firebase from 'firebase/app';
 
-///import * as firebase from 'firebase/app';
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-
-
+//Version 8.2.3
 
 import firebase from "firebase";
+
+//////////firestore
+import "firebase/firestore";
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
@@ -22,22 +16,7 @@ var firebaseConfig = {
     appId: "1:113817630837:web:90dd6c2e7118eba31ea03c"
   };
   
-  firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig); 
 
-  export default firebase; 
+  export default firebase;  //original certo = ok!
 
-  // Initialize Firebase
-  /////const app = initializeApp(firebaseConfig);
-
-/* Initialize Firebase
-let app;
-if (firebase.apps.length === 0){
-    app = firebase.initializeApp(firebaseConfig)
-} else {
-    app = firebase.app();
-}
-
-const auth = firebase.auth();
-
-export { auth };
-*/

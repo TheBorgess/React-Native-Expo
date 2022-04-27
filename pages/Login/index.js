@@ -1,12 +1,10 @@
 
 import React, { useState } from 'react';
-import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity } from 'react-native';
-import { Input, Icon , Text} from 'react-native-elements';
-//import { NavigationContainer } from '@react-navigation/native';
-//import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/core';
-import { useAnimatedGestureHandler } from 'react-native-reanimated';
-//import { auth } from '../../firebase';
+import { StyleSheet, View , Button , Alert, ToastAndroid , TouchableOpacity , Text } from 'react-native';
+import { Input, Icon } from 'react-native-elements';
+////////import { useNavigation , useRoute } from '@react-navigation/core';
+
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import firebase from '../../firebase';
 
@@ -21,18 +19,20 @@ import firebase from '../../firebase';
 
    const navigation = useNavigation()
 
-   
    const handleSignUp = () => {
-      navigation.navigate("SignUp");  
+      navigation.navigate('SignUp', {nome: email});  
    }
 
-   
    const handleLogin = () => {
 
       firebase.auth().signInWithEmailAndPassword(email, password)
       .then((userCredential) => {     
         var user = userCredential.user;
-        navigation.navigate("Tasks"); //Tasks = certo ok
+        setEmail("");
+        setPassword("");
+        setStatus("");
+        navigation.navigate("Tasks"); 
+        //navigation.navigate("UsersList"); 
       })
       .catch((error) => {
         var errorCode = error.code;
@@ -43,23 +43,21 @@ import firebase from '../../firebase';
 
    }
 
-
    return (
      <>
        <View style={styles.container}>
          <Text style={styles.sectionTitle}>Login</Text>
-         &nbsp;&nbsp;<br />
 
-        <Text style={styles.baseText}>{status === 'erro' ? mensagem : ""}</Text>
+        <Text style={styles.baseText}>{status === 'erro' ? mensagem : ""}</Text> 
 
          <Input 
             placeholder='E-mail'
             leftIcon={<Icon name="email" size={23} color="#A020F0" />}
-            keyboardType="email-address"
+            keyboardType="email-address" value={email}
             onChangeText={(text)=>setEmail(text)}
          />
          <Input 
-            placeholder='Password'
+            placeholder='Password' value={password}
             leftIcon={<Icon name="lock" size={25} color="#A020F0" />}
             rightIcon={
                <TouchableOpacity
@@ -81,10 +79,12 @@ import firebase from '../../firebase';
               /> 
            }
            color="#A020F0"
-           title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+           title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
            onPress={handleLogin}
         />
-        &nbsp;
+          
+          <Text style={styles.sectionTitle2}>t</Text>
+
           <Button 
            icon={
               <Icon
@@ -132,6 +132,10 @@ import firebase from '../../firebase';
    baseText: {
     //fontWeight: 'bold',
     color: "red",
+  },
+   sectionTitle2: {
+    color: 'white',
+    fontSize: 7,
   },
  })
 

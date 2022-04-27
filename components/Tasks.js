@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-web';
 
-//////////import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 
 const Tasks = (props) => {
 
@@ -11,7 +10,7 @@ const Tasks = (props) => {
        
           <View style={styles.itemLeft}> 
               <View style={styles.square}></View>
-              <Text style={styles.itemText}>{props.text}</Text>
+              <Text style={styles.itemText}>{props.text?.name}</Text>
           </View>
 
           <View style={styles.circular}></View>
