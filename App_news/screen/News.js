@@ -1,5 +1,5 @@
 import React , { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, Button, FlatList } from 'react-native';
+import { View, StyleSheet, Text, Button, FlatList, ScrollView, RefreshControl } from 'react-native';
 import NewsCard from '../components/NewsCard';
 import newAPI from '../apis/News';
 
@@ -9,15 +9,10 @@ const News = () => {
    const [news, setNews] = useState([]);
 
    useEffect(() => {
-        ////newsResponse();
         getNewsFromAPI();
    },[]);
 
-   ////const newsResponse = async() => {
-   ////   const response = await newAPI.get('top-headlines?country=us&apiKey=aa6a097fb9fb4509958fdabd1942e6d1'); 
-   ////   console.log(response.data);
-   ////}
-   
+
    function getNewsFromAPI(){
       
       newAPI.get('top-headlines?country=us&apiKey=aa6a097fb9fb4509958fdabd1942e6d1')
@@ -34,11 +29,32 @@ const News = () => {
    //   return null;
    //}
 
+   const [refresh, setRefresh] = useState(false);
+    
+   const pullMe = () => {
+       setRefresh(true);
+
+       getNewsFromAPI();
+
+       setTimeout(()=>{
+           setRefresh(false)
+         },4000)     
+   }
+
    return(
         
         <View style={styles.container}>
            <Text style={styles.author}>News</Text> 
-          
+        
+         <ScrollView 
+          refreshControl={
+             <RefreshControl refreshing={refresh}
+                onRefresh={()=>pullMe()}
+             />
+          }
+         >  
+
+
            <FlatList data={news.articles}
               keyExtractor={(item, index) => 'key' + index}
               renderItem={({item}) => {
@@ -46,9 +62,12 @@ const News = () => {
               }}
            />
 
+
+         </ScrollView>
+
         </View>
    
-   )
+   );
 }
 
 const styles = StyleSheet.create({
@@ -57,12 +76,12 @@ const styles = StyleSheet.create({
       backgroundColor: '#F5F5F5',
     },
    author:{
-      fontSize: 13,
+      fontSize: 14,
       alignSelf: 'center',
       color: 'gray',
       fontWeight: 'bold',
       marginBottom: 0,
-      marginTop: 5  
+      marginTop: 40  
    }
  });
 

@@ -1,24 +1,20 @@
 import React from 'react';
 
-import { createAppContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { LogBox } from 'react-native';
+
+////import { createAppContainer } from '@react-navigation/native';
+////import { createStackNavigator } from '@react-navigation/stack';
 
 import News from './screen/News';
 
-//const stackNavigator = createStackNavigator({
-    
-//     News: News
-
-//});
-
-//const App = createAppContainer(stackNavigator);
+LogBox.ignoreAllLogs();
 
 const App = () => {
      return(
        <>
-         <News />
+          <News /> 
        </>
-     )
+     );
 }
 
 export default App;
