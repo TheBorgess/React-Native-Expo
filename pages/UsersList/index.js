@@ -126,17 +126,25 @@ const UsersList = () => {
                 <Swipeable onSwipeableRightOpen={() => deleteUser(user.id)} renderRightActions={rightSwipe}>
 
                   <ListItem  key={user.id} bottomDivider onPress={() => navigation.navigate('UserDetail', { userId: user.id })} >
-                     <ListItem.Chevron />
-                    {/* <Avatar
-                         rounded
-                            source={{ uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',}}
-                    /> */}
-                   
+                     <ListItem.Chevron />      
+                      {user.address.length < 50 ?
+                        <Avatar size="medium"
+                           rounded
+                              source={{ uri: `https://randomuser.me/api/portraits/men/${contador}.jpg`}}
+                         />                       
+                      : 
+                         <Avatar size="medium"
+                           rounded
+                              source={{ uri: `${user.address}` }}
+                         /> 
+                      } 
+                 {/*It's working, i just found a better way!!!!
                    {contador % 2 === 0 ? 
-                      <Avatar rounded source={require('../../assets/headshot.webp')}/>
+                      <Avatar rounded source={{ uri: 'https://randomuser.me/api/portraits/men/1.jpg'}}/>
                     : 
                       <Avatar rounded source={require('../../assets/man.jpg')}/>  
                    }  
+                  */} 
   
                      <ListItem.Content>
                         <ListItem.Title>{user.userName}</ListItem.Title>

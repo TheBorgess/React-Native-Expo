@@ -93,7 +93,7 @@ export default function App({ route }) {
       [
         {
           text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
+          //onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
         { text: "OK", onPress: () => deleteTask(index) }
@@ -115,11 +115,16 @@ export default function App({ route }) {
            title="Users List"
            onPress={() => navigation.navigate('UsersList')}
       />
+      <Button 
+           color="#CC66FF"
+           title="About Us"
+           onPress={() => navigation.navigate('AboutUs')}
+      />
 
       {/* Today's tasks */}
       <View style={styles.tasksWrapper}>
           
-          <Text style={styles.sectionTitle}>Today's Tasks - Storage</Text>
+          <Text style={styles.sectionTitle}>Today's Tasks</Text>
 
           <View style={styles.items}>
 
@@ -167,6 +172,7 @@ export default function App({ route }) {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 40,
     flex: 1,
     backgroundColor: '#A020F0',
   },

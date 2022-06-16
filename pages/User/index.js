@@ -4,6 +4,8 @@ import { Input, Icon } from 'react-native-elements';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { TextInputMask } from 'react-native-masked-text';
+
 import firebase from '../../firebase';
 
  const User = () => {
@@ -11,6 +13,9 @@ import firebase from '../../firebase';
    const db = firebase.firestore();
 
    const navigation = useNavigation();
+
+   const route = useRoute();
+   //console.log('===', route.params?.image);
    
    const [state, setState] = useState({
       userName: "",
@@ -25,15 +30,19 @@ import firebase from '../../firebase';
 
    const addNewUser = async () => {
       //console.log('==', state);
+     var imagemOk = "";
+     if (route.params?.image){
+            imagemOk = route.params?.image;
+     }  
       if (state.userName != '') {   
         await db.collection('users').add({   //firebase.db.collection
                  userName: state.userName,
-                 address: state.address,
+                 address: imagemOk, //route.params?.image,
                  phone: state.phone
         });
         setState({ ...state, userName: '', address: '', phone: ''}); 
         //console.log('name=', state.userName);
-        alert('User added with success');
+        alert('User has been added with success');
         navigation.navigate('UsersList');
       }else{
          alert('Error, Name is null');
@@ -44,21 +53,12 @@ import firebase from '../../firebase';
       navigation.navigate('UsersList');
    }
 
+   const addImage = () => {
+      navigation.navigate('Image');  
+   }
+
    return (
      <>
-      <Button 
-           icon={
-              <Icon
-                 name="check"
-                 size={15}
-                 color="CC66FF"
-              /> 
-           }
-           color="#A020F0"
-           title="go back"
-           onPress={goBack}
-       />
-
        <View style={styles.container}>
          <Text style={styles.sectionTitle}>New User</Text>
 
@@ -67,27 +67,41 @@ import firebase from '../../firebase';
             onChangeText={(value) => handleCreateUser('userName', value)}
          />
 
-        <Input 
-            placeholder='Address' value={state.address}
+        <Input editable = {false}
+            placeholder='Image' value={route.params?.image}
             onChangeText={(value) => handleCreateUser('address', value)}
          />
    
-        <Input 
+        {/*<Input 
             placeholder='Phone' value={state.phone}
             onChangeText={(value) => handleCreateUser('phone', value)}
-         />
+         />*/}
+
+        <TextInputMask
+           style={styles.input}
+           placeholder='Phone'
+           type={'cel-phone'}
+           options={{
+              maskType: 'BRL',
+              withDDD: true,
+              dddMask: '(99) '
+           }}
+           value={state.phone}
+           onChangeText={(value) => handleCreateUser('phone', value)}
+        />  
 
         <Button 
-           icon={
-              <Icon
-                 name="check"
-                 size={15}
-                 color="#FFF"
-              /> 
-           }
            color="#A020F0"
-           title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Save User&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+           title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Save User&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
            onPress={addNewUser}
+        />
+
+          <Text style={styles.sectionTitle2}>t</Text>
+
+        <Button 
+           color="#058FFD"
+           title="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pick a Image&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+           onPress={addImage}
         />
       </View>
      </>
@@ -107,6 +121,25 @@ import firebase from '../../firebase';
    },
    baseText: {
     color: "red",
+  },
+  input: {
+    width: '97%',
+    height: 40,
+    backgroundColor: 'white',
+    borderBottomWidth:1,
+    borderRadius: 5,
+    fontSize: 19,
+    padding: 5,
+    marginBottom: 25,
+  },
+  button: {
+    width: '100%',
+    borderRadius: 5,
+    marginTop: 14,
+  },
+  sectionTitle2: {
+    color: 'white',
+    fontSize: 14,
   },
  })
 
